@@ -9,6 +9,13 @@ import (
 
 // LocustSpec defines the desired state of Locust
 type LocustSpec struct {
+	//HostURL is the url the loadtest is executed agains
+	HostURL string `json:"hosturl"`
+	//LocustSpec is the locust file to define tests
+	LocustFile string `json:"locustfile,omitempty"`
+	//NumberOfUsers is the maximum number of users to simulate
+	Workers int32 `json:"workers,omitempty"`
+
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
 	// Add custom validation using kubebuilder tags: https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html
@@ -16,6 +23,7 @@ type LocustSpec struct {
 
 // LocustStatus defines the observed state of Locust
 type LocustStatus struct {
+	CurrentWorkers int32 `json:"currentworkers,omitempty"`
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
 	// Add custom validation using kubebuilder tags: https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html

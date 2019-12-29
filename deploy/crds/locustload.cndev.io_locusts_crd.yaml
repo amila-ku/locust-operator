@@ -30,9 +30,26 @@ spec:
           type: object
         spec:
           description: LocustSpec defines the desired state of Locust
+          properties:
+            hosturl:
+              description: HostURL is the url the loadtest is executed agains
+              type: string
+            locustfile:
+              description: LocustSpec is the locust file to define tests
+              type: string
+            workers:
+              description: NumberOfUsers is the maximum number of users to simulate
+              format: int32
+              type: integer
+          required:
+          - hosturl
           type: object
         status:
           description: LocustStatus defines the observed state of Locust
+          properties:
+            currentworkers:
+              format: int32
+              type: integer
           type: object
       type: object
   version: v1alpha1
