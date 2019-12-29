@@ -1,0 +1,7 @@
+apiVersion: locustload.cndev.io/v1alpha1
+kind: Locust
+metadata:
+  name: example-locust
+spec:
+  # Add fields here
+  size: 3
