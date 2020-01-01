@@ -630,6 +630,7 @@ honnef.co/go/tools v0.0.0-20180728063816-88497007e858/go.mod h1:rf3lG4BRIbNafJWh
 honnef.co/go/tools v0.0.0-20190102054323-c2f93a96b099/go.mod h1:rf3lG4BRIbNafJWhAfAdb/ePZxsR/4RtNHQocxwk9r4=
 k8s.io/api v0.0.0-20190918195907-bd6ac527cfd2 h1:bkwe5LsuANqyOwsBng5Qc4S91D2Tv0JHctAztt3YTQs=
 k8s.io/api v0.0.0-20190918195907-bd6ac527cfd2/go.mod h1:AOxZTnaXR/xiarlQL0JUfwQPxjmKDvVYoRp58cA7lUo=
+k8s.io/apiextensions-apiserver v0.0.0-20190918201827-3de75813f604 h1:Kl/sh+wWzYK2hWFZtwvuFECup1SbE2kXfMnhGZsoO5M=
 k8s.io/apiextensions-apiserver v0.0.0-20190918201827-3de75813f604/go.mod h1:7H8sjDlWQu89yWB3FhZfsLyRCRLuoXoCoY5qtwW1q6I=
 k8s.io/apimachinery v0.0.0-20190817020851-f2f3a405f61d h1:7Kns6qqhMAQWvGkxYOLSLRZ5hJO0/5pcE5lPGP2fxUw=
 k8s.io/apimachinery v0.0.0-20190817020851-f2f3a405f61d/go.mod h1:3jediapYqJ2w1BFw7lAZPCx7scubsTfosqHkhXCWJKw=
