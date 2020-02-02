@@ -11,8 +11,8 @@ import (
 type LocustSpec struct {
 	//HostURL is the url the loadtest is executed agains
 	HostURL string `json:"hosturl"`
-	//LocustImage is the container with locust files tests
-	LocustImage string `json:"locustimage"`
+	//Image is the container with locust files tests
+	Image string `json:"image"`
 	//NumberOfUsers is the maximum number of users to simulate
 	Workers int32 `json:"workers,omitempty"`
 

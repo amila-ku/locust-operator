@@ -34,8 +34,8 @@ spec:
             hosturl:
               description: HostURL is the url the loadtest is executed agains
               type: string
-            locustimage:
-              description: LocustImage is the container with locust files tests
+            image:
+              description: Image is the container with locust files tests
               type: string
             workers:
               description: NumberOfUsers is the maximum number of users to simulate
@@ -43,7 +43,7 @@ spec:
               type: integer
           required:
           - hosturl
-          - locustimage
+          - image
           type: object
         status:
           description: LocustStatus defines the observed state of Locust
