@@ -5,4 +5,5 @@ metadata:
 spec:
   # Add fields here
   size: 3
-  image: 
+  image: test
+  hosturl: https://test.com
