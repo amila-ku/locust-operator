@@ -24,3 +24,12 @@ kubectl create -f deploy/role_binding.yaml
 kubectl create -f deploy/operator.yaml
 
 ```
+
+### check if operator pod is running 
+
+```
+kubectl get pods
+NAME                                     READY   STATUS    RESTARTS   AGE
+locust-operator-opsdk-5fb99cfd9b-k5w4b   1/1     Running   0          118s
+
+```
