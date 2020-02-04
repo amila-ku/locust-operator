@@ -16,7 +16,7 @@ spec:
       containers:
         - name: locust-operator-opsdk
           # Replace this with the built image name
-          image: quay.io/amila_ku/locust-operator:v0.0.1
+          image: docker.io/amilaku/locust-operator:v0.0.1
           command:
           - locust-operator-opsdk
           imagePullPolicy: Always
