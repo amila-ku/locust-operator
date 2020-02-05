@@ -5,5 +5,5 @@ metadata:
 spec:
   # Add fields here
   size: 3
-  image: test
-  hosturl: https://test.com
+  image: locustio/locust
+  hosturl: https://www.google.com

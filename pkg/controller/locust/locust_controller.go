@@ -139,8 +139,8 @@ func newPodForCR(cr *locustloadv1alpha1.Locust) *corev1.Pod {
 		Spec: corev1.PodSpec{
 			Containers: []corev1.Container{
 				{
-					Name:    "busybox",
-					Image:   "busybox",
+					Name:    "locust",
+					Image:   cr.Spec.Image,
 					Command: []string{"sleep", "3600"},
 				},
 			},
