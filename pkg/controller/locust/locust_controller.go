@@ -18,6 +18,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 	"sigs.k8s.io/controller-runtime/pkg/source"
+
+	lc "github.com:amila-ku/locust-client.git"
 )
 
 var log = logf.Log.WithName("controller_locust")
@@ -146,4 +148,9 @@ func newPodForCR(cr *locustloadv1alpha1.Locust) *corev1.Pod {
 			},
 		},
 	}
+}
+
+// controlles locust instance in provided url.
+func controlLocust(url string, users int, hatchrate int ){
+
 }
