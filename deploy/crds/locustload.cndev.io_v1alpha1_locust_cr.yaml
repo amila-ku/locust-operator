@@ -7,3 +7,5 @@ spec:
   size: 3
   image: locustio/locust
   hosturl: https://www.google.com
+  users: 2
+  hatchrate: 1

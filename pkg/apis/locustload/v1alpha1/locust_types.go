@@ -10,11 +10,13 @@ import (
 // LocustSpec defines the desired state of Locust
 type LocustSpec struct {
 	//HostURL is the url the loadtest is executed agains
-	HostURL string `json:"hosturl"`
+	HostUrl string `json:"hosturl"`
 	//Image is the container with locust files tests
 	Image string `json:"image"`
-	//NumberOfUsers is the maximum number of users to simulate
-	Workers int32 `json:"workers,omitempty"`
+	//Users is the maximum number of users to simulate
+	Users int `json:"users,omitempty"`
+	//HatchRate is the maximum number of users to simulate
+	HatchRate int `json:"hatchrate,omitempty"`
 
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file

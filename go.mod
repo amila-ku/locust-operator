@@ -3,6 +3,7 @@ module github.com/amila-ku/locust-operator-opsdk
 go 1.13
 
 require (
+	github.com/amila-ku/locust-client v0.0.0-20200208224805-a7f0bcb2acf2
 	github.com/operator-framework/operator-sdk v0.13.0
 	github.com/spf13/pflag v1.0.5
 	k8s.io/api v0.0.0

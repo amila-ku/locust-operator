@@ -31,15 +31,17 @@ spec:
         spec:
           description: LocustSpec defines the desired state of Locust
           properties:
+            hatchrate:
+              description: HatchRate is the maximum number of users to simulate
+              type: integer
             hosturl:
               description: HostURL is the url the loadtest is executed agains
               type: string
             image:
               description: Image is the container with locust files tests
               type: string
-            workers:
-              description: NumberOfUsers is the maximum number of users to simulate
-              format: int32
+            users:
+              description: Users is the maximum number of users to simulate
               type: integer
           required:
           - hosturl

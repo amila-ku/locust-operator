@@ -19,7 +19,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 	"sigs.k8s.io/controller-runtime/pkg/source"
 
-	lc "github.com:amila-ku/locust-client.git"
+	lc "github.com/amila-ku/locust-client"
 )
 
 var log = logf.Log.WithName("controller_locust")
@@ -124,6 +124,9 @@ func (r *ReconcileLocust) Reconcile(request reconcile.Request) (reconcile.Result
 
 	// Pod already exists - don't requeue
 	reqLogger.Info("Skip reconcile: Pod already exists", "Pod.Namespace", found.Namespace, "Pod.Name", found.Name)
+
+	// Start load
+	err = controlLocust(instance)
 	return reconcile.Result{}, nil
 }
 
@@ -151,6 +154,15 @@ func newPodForCR(cr *locustloadv1alpha1.Locust) *corev1.Pod {
 }
 
 // controlles locust instance in provided url.
-func controlLocust(url string, users int, hatchrate int ){
+func controlLocust(cr *locustloadv1alpha1.Locust ) error {
+	locustController, err := lc.New(cr.Spec.HostUrl)
+	if err != nil {
+		return err
+	}
+	_, err = locustController.StartLoad(cr.Spec.Users, cr.Spec.HatchRate)
+	if err != nil {
+		return err
+	}
 
+    return nil
 }
