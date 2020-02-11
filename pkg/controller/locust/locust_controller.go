@@ -147,6 +147,13 @@ func newPodForCR(cr *locustloadv1alpha1.Locust) *corev1.Pod {
 					Name:    "locust",
 					Image:   cr.Spec.Image,
 					Command: []string{"sleep", "3600"},
+					Ports: []corev1.ContainerPort{
+						{
+							Name:          "http",
+							Protocol:      corev1.ProtocolTCP,
+							ContainerPort: 8089,
+						},
+					},
 				},
 			},
 		},
