@@ -145,8 +145,13 @@ func newPodForCR(cr *locustloadv1alpha1.Locust) *corev1.Pod {
 			Containers: []corev1.Container{
 				{
 					Name:    "locust",
+					Env: []corev1.EnvVar{
+						{
+							Name:       "TARGET_HOST",
+							Value:      "https://www.google.com/",
+						},
+					},
 					Image:   cr.Spec.Image,
-					Command: []string{"sleep", "3600"},
 					Ports: []corev1.ContainerPort{
 						{
 							Name:          "http",

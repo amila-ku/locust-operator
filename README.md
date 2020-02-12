@@ -5,6 +5,9 @@
 commands
 
 ```
+operator-sdk generate k8s
+operator-sdk generate crds
+
 operator-sdk add controller --api-version=locustload.cndev.io/v1alpha1 --kind=Locust
 
 operator-sdk build quay.io/amila_ku/locust-operator:v0.0.1
@@ -13,8 +16,9 @@ sed -i 's|REPLACE_IMAGE|quay.io/amila_ku/locust-operator:v0.0.1|g' deploy/operat
 
 docker push quay.io/amila_ku/locust-operator:v0.0.1
 
-docker push amilaku/locust-operator:v0.0.1
+docker tag quay.io/amila_ku/locust-operator:v0.0.3 amilaku/locust-operator:v0.0.3
 
+docker push amilaku/locust-operator:v0.0.1
 kubectl apply -f deploy/crds/locustload.cndev.io_locusts_crd.yaml 
 
 kubectl get crds
