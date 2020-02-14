@@ -16,4 +16,4 @@ RUN chmod 755 /tasks/main.py
 EXPOSE 5557 5558 8089
 
 # Start Locust 
-ENTRYPOINT ["locust -f /tasks/main.py"] 
+CMD ["locust", "-f", "tasks/main.py" ] 
