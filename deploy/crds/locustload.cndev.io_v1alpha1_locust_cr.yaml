@@ -5,7 +5,7 @@ metadata:
 spec:
   # Add fields here
   size: 3
-  image: locustio/locust
+  image: amilaku/locust:v0.0.1
   hosturl: https://www.google.com
   users: 2
   hatchrate: 1
