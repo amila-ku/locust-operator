@@ -127,6 +127,10 @@ func (r *ReconcileLocust) Reconcile(request reconcile.Request) (reconcile.Result
 
 	// Start load
 	err = controlLocust(instance)
+	if err != nil {
+		return reconcile.Result{}, err
+	}
+	
 	return reconcile.Result{}, nil
 }
 

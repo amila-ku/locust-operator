@@ -3,7 +3,7 @@ package locust
 import "github.com/amila-ku/locust-client"
 
 
-func Swarm() {
+func startLoad() {
 	client, err := New(locusturl)
 	if err != nil {
 		return err
