@@ -4,12 +4,7 @@ import "github.com/amila-ku/locust-client"
 
 
 func startLoad() {
-	client, err := New(locusturl)
-	if err != nil {
-		return err
-	}
-	status, err := client.Start(5, 1)
-	if err != nil {
-		return err
-	}
+	// create client
+	// chekc if endpoint is available to use
+	// ramp up load
 }
