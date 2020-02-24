@@ -23,6 +23,7 @@ import (
 )
 
 var log = logf.Log.WithName("controller_locust")
+var locustUrl = "http://localhost:8089"
 
 // Add creates a new Locust Controller and adds it to the Manager. The Manager will set fields on the Controller
 // and Start it when the Manager is Started.
@@ -130,7 +131,7 @@ func (r *ReconcileLocust) Reconcile(request reconcile.Request) (reconcile.Result
 	if err != nil {
 		return reconcile.Result{}, err
 	}
-	
+
 	return reconcile.Result{}, nil
 }
 
