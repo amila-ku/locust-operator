@@ -173,7 +173,7 @@ func newPodForCR(cr *locustloadv1alpha1.Locust) *corev1.Pod {
 // deploymentForLocust returns a Locust Deployment object
 func (r *ReconcileLocust) deploymentForLocust(cr *locustloadv1alpha1.Locust) *appsv1.Deployment {
 	ls := labelsForLocust(cr.Name)
-	replicas := cr.Spec.Size
+	replicas := 1
 
 	dep := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
