@@ -170,6 +170,68 @@ func newPodForCR(cr *locustloadv1alpha1.Locust) *corev1.Pod {
 	}
 }
 
+// deploymentForLocust returns a Locust Deployment object
+func (r *ReconcileLocust) deploymentForLocust(cr *locustloadv1alpha1.Locust) *appsv1.Deployment {
+	ls := labelsForLocust(cr.Name)
+	replicas := cr.Spec.Size
+
+	dep := &appsv1.Deployment{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      cr.Name,
+			Namespace: cr.Namespace,
+		},
+		Spec: appsv1.DeploymentSpec{
+			Replicas: &replicas,
+			Selector: &metav1.LabelSelector{
+				MatchLabels: ls,
+			},
+			Template: corev1.PodTemplateSpec{
+				ObjectMeta: metav1.ObjectMeta{
+					Labels: ls,
+				},
+				Spec: corev1.PodSpec{
+					Containers: []corev1.Container{{
+						Image:   cr.Spec.Image,
+						Name:    "Locust",
+						// Command: []string{"Locust", "-m=64", "-o", "modern", "-v"},
+						Env: []corev1.EnvVar{
+							{
+								Name:       "TARGET_HOST",
+								Value:      "https://www.google.com/",
+							},
+						},
+						Ports: []corev1.ContainerPort{
+							{
+								Name:          "http",
+								Protocol:      corev1.ProtocolTCP,
+								ContainerPort: 8089,
+							},
+						},
+					}},
+				},
+			},
+		},
+	}
+	// Set Locust instance as the owner and controller
+	controllerutil.SetControllerReference(cr, dep, r.scheme)
+	return dep
+}
+
+// labelsForLocust returns the labels for selecting the resources
+// belonging to the given Locust CR name.
+func labelsForLocust(name string) map[string]string {
+	return map[string]string{"app": "Locust", "Locust_cr": name}
+}
+
+// getPodNames returns the pod names of the array of pods passed in
+func getPodNames(pods []corev1.Pod) []string {
+	var podNames []string
+	for _, pod := range pods {
+		podNames = append(podNames, pod.Name)
+	}
+	return podNames
+}
+
 // controlles locust instance in provided url.
 func controlLocust(cr *locustloadv1alpha1.Locust ) error {
 	locustController, err := lc.New(cr.Spec.HostUrl)
