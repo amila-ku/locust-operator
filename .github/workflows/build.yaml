@@ -12,4 +12,5 @@ jobs:
       with:
           image: "quay.io/amila_ku/locust-operator"
           tag: 0.4
+          dirPath: "build/"
       id: go
