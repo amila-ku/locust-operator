@@ -7,8 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-    - name: Set up Operator SDK n build
-      uses: xunholy/operator-sdk-action
+    - name: Set up operator
+      uses: xUnholy/operator-sdk-github-action@v1.0.0
       with:
           image: "quay.io/amila_ku/locust-operator"
           tag: 0.4
