@@ -172,7 +172,7 @@ func newPodForCR(cr *locustloadv1alpha1.Locust) *corev1.Pod {
 }
 
 // deploymentForLocust returns a Locust Deployment object
-func (r *ReconcileLocust) deploymentForLocust(cr *locustloadv1alpha1.Locust) *appsv1.Deployment {
+func deploymentForLocust(cr *locustloadv1alpha1.Locust) *appsv1.Deployment {
 	ls := labelsForLocust(cr.Name)
 	replicas := int32Ptr(1)
 
