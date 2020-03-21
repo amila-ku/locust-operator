@@ -101,7 +101,7 @@ func (r *ReconcileLocust) Reconcile(request reconcile.Request) (reconcile.Result
 
 	// Define a new Pod object
 	// pod := newPodForCR(instance)
-	deployment := deploymentForLocust(instance)
+	deployment := r.deploymentForLocust(instance)
 
 	// Set Locust instance as the owner and controller
 	if err := controllerutil.SetControllerReference(instance, deployment, r.scheme); err != nil {
@@ -172,7 +172,7 @@ func newPodForCR(cr *locustloadv1alpha1.Locust) *corev1.Pod {
 }
 
 // deploymentForLocust returns a Locust Deployment object
-func deploymentForLocust(cr *locustloadv1alpha1.Locust) *appsv1.Deployment {
+func (r *ReconcileLocust) deploymentForLocust(cr *locustloadv1alpha1.Locust) *appsv1.Deployment {
 	ls := labelsForLocust(cr.Name)
 	replicas := int32Ptr(1)
 
