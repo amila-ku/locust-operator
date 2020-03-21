@@ -101,7 +101,7 @@ func (r *ReconcileLocust) Reconcile(request reconcile.Request) (reconcile.Result
 
 	// Define a new Pod object
 	// pod := newPodForCR(instance)
-	deployment := deploymentForLocust
+	deployment := deploymentForLocust(instance)
 
 	// Set Locust instance as the owner and controller
 	if err := controllerutil.SetControllerReference(instance, deployment, r.scheme); err != nil {
@@ -110,7 +110,7 @@ func (r *ReconcileLocust) Reconcile(request reconcile.Request) (reconcile.Result
 
 	// Check if this Deployment already exists
 	found := &corev1.Pod{}
-	err = r.client.Get(context.TODO(), types.NamespacedName{Name: deployment.Name, Namespace: pod.Namespace}, found)
+	err = r.client.Get(context.TODO(), types.NamespacedName{Name: deployment.Name, Namespace: deployment.Namespace}, found)
 	if err != nil && errors.IsNotFound(err) {
 		reqLogger.Info("Creating a new Deployment", "Pod.Namespace", deployment.Namespace, "Deployment.Name", deployment.Name)
 		err = r.client.Create(context.TODO(), deployment)
@@ -174,7 +174,7 @@ func newPodForCR(cr *locustloadv1alpha1.Locust) *corev1.Pod {
 // deploymentForLocust returns a Locust Deployment object
 func (r *ReconcileLocust) deploymentForLocust(cr *locustloadv1alpha1.Locust) *appsv1.Deployment {
 	ls := labelsForLocust(cr.Name)
-	replicas := 1
+	replicas := int32Ptr(1)
 
 	dep := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
@@ -182,7 +182,7 @@ func (r *ReconcileLocust) deploymentForLocust(cr *locustloadv1alpha1.Locust) *ap
 			Namespace: cr.Namespace,
 		},
 		Spec: appsv1.DeploymentSpec{
-			Replicas: &replicas,
+			Replicas: replicas,
 			Selector: &metav1.LabelSelector{
 				MatchLabels: ls,
 			},
@@ -246,3 +246,5 @@ func controlLocust(cr *locustloadv1alpha1.Locust ) error {
 
     return nil
 }
+
+func int32Ptr(i int32) *int32 { return &i }
