@@ -21,4 +21,5 @@ RUN apk add --update docker
 
 # usage: in GitHub Actions, execute "operator-sdk build image:version"
 COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
