@@ -193,12 +193,12 @@ func (r *ReconcileLocust) deploymentForLocust(cr *locustloadv1alpha1.Locust) *ap
 				Spec: corev1.PodSpec{
 					Containers: []corev1.Container{{
 						Image:   cr.Spec.Image,
-						Name:    "Locust",
+						Name:    cr.Name,
 						// Command: []string{"Locust", "-m=64", "-o", "modern", "-v"},
 						Env: []corev1.EnvVar{
 							{
 								Name:       "TARGET_HOST",
-								Value:      "https://www.google.com/",
+								Value:      cr.Spec.HostUrl,
 							},
 						},
 						Ports: []corev1.ContainerPort{
