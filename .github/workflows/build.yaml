@@ -1,16 +1,13 @@
-name: Go
+name: build latest on push to master and release
 on: [push]
 jobs:
-
-  build:
-    name: Build
+  operator-sdk:
     runs-on: ubuntu-latest
     steps:
-
-    - name: Set up operator
-      uses: xUnholy/operator-sdk-github-action@v1.0.0
+    - uses: actions/checkout@master
+    - name: operator-sdk
+      env:
+        GO111MODULE: "on"
+      uses: ./.github/action/operatorsdk
       with:
-          image: "quay.io/amila_ku/locust-operator"
-          tag: 0.4
-          dirPath: "build/"
-      id: go
+        args: build quay.io/amila_ku/locust-operator:latest
