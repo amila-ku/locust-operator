@@ -207,6 +207,52 @@ func (r *ReconcileLocust) deploymentForLocust(cr *locustloadv1alpha1.Locust) *ap
 								Protocol:      corev1.ProtocolTCP,
 								ContainerPort: 8089,
 							},
+							{
+								Name:          "slave",
+								Protocol:      corev1.ProtocolTCP,
+								ContainerPort: 5557,
+							},
+						},
+					}},
+				},
+			},
+		},
+	}
+	// Set Locust instance as the owner and controller
+	controllerutil.SetControllerReference(cr, dep, r.scheme)
+	return dep
+}
+
+// deploymentForLocustSlaves returns a Locust Deployment object
+func (r *ReconcileLocust) deploymentForLocustSlaves(cr *locustloadv1alpha1.Locust) *appsv1.Deployment {
+	ls := labelsForLocust(cr.Name)
+	replicas := int32Ptr(1)
+
+	dep := &appsv1.Deployment{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      cr.Name + "slave",
+			Namespace: cr.Namespace,
+		},
+		Spec: appsv1.DeploymentSpec{
+			Replicas: replicas,
+			Selector: &metav1.LabelSelector{
+				MatchLabels: ls,
+			},
+			Template: corev1.PodTemplateSpec{
+				ObjectMeta: metav1.ObjectMeta{
+					Labels: ls,
+				},
+				Spec: corev1.PodSpec{
+					Containers: []corev1.Container{{
+						Image:   cr.Spec.Image,
+						Name:    cr.Name + "slave",
+						//Command: []string{"Locust", "-m=64", "-o", "modern", "-v"},
+						Ports: []corev1.ContainerPort{
+							{
+								Name:          "http",
+								Protocol:      corev1.ProtocolTCP,
+								ContainerPort: 8089,
+							},
 						},
 					}},
 				},
