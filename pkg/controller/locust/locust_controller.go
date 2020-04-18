@@ -198,7 +198,7 @@ func (r *ReconcileLocust) deploymentForLocust(cr *locustloadv1alpha1.Locust) *ap
 						Env: []corev1.EnvVar{
 							{
 								Name:       "TARGET_HOST",
-								Value:      cr.Spec.HostUrl,
+								Value:      cr.Spec.HostURL,
 							},
 						},
 						Ports: []corev1.ContainerPort{
@@ -226,15 +226,14 @@ func (r *ReconcileLocust) deploymentForLocust(cr *locustloadv1alpha1.Locust) *ap
 // deploymentForLocustSlaves returns a Locust Deployment object
 func (r *ReconcileLocust) deploymentForLocustSlaves(cr *locustloadv1alpha1.Locust) *appsv1.Deployment {
 	ls := labelsForLocust(cr.Name)
-	replicas := int32Ptr(1)
 
 	dep := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      cr.Name + "slave",
+			Name:      cr.Name + "-slave",
 			Namespace: cr.Namespace,
 		},
 		Spec: appsv1.DeploymentSpec{
-			Replicas: replicas,
+			Replicas: &cr.Spec.Slaves,
 			Selector: &metav1.LabelSelector{
 				MatchLabels: ls,
 			},
@@ -245,15 +244,8 @@ func (r *ReconcileLocust) deploymentForLocustSlaves(cr *locustloadv1alpha1.Locus
 				Spec: corev1.PodSpec{
 					Containers: []corev1.Container{{
 						Image:   cr.Spec.Image,
-						Name:    cr.Name + "slave",
-						//Command: []string{"Locust", "-m=64", "-o", "modern", "-v"},
-						Ports: []corev1.ContainerPort{
-							{
-								Name:          "http",
-								Protocol:      corev1.ProtocolTCP,
-								ContainerPort: 8089,
-							},
-						},
+						Name:    cr.Name + "-slave",
+						Command: []string{"Locust", "--host", "unused", "--slave", "--master-host", "locust-service", "-f", "/tasks/main.py"},
 					}},
 				},
 			},
@@ -264,6 +256,35 @@ func (r *ReconcileLocust) deploymentForLocustSlaves(cr *locustloadv1alpha1.Locus
 	return dep
 }
 
+// serviceForLocust returns a Service object
+func (r *ReconcileLocust) serviceForLocust(cr *locustloadv1alpha1.Locust) *corev1.Service {
+	ls := labelsForLocust(cr.Name)
+
+	svc := &corev1.Service{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      cr.Name + "-service",
+			Namespace: cr.Namespace,
+		},
+		Spec: corev1.ServiceSpec{
+			Selector: ls,
+			Ports: []corev1.ServicePort{
+				{
+					Name:          "http",
+					Protocol:      corev1.ProtocolTCP,
+					Port: 8089,
+				},
+				{
+					Name:          "slave",
+					Protocol:      corev1.ProtocolTCP,
+					Port: 5557,
+				},
+			},
+		},
+	}
+	// Set Locust instance as the owner and controller
+	controllerutil.SetControllerReference(cr, svc, r.scheme)
+	return svc
+}
 // labelsForLocust returns the labels for selecting the resources
 // belonging to the given Locust CR name.
 func labelsForLocust(name string) map[string]string {
@@ -281,7 +302,7 @@ func getPodNames(pods []corev1.Pod) []string {
 
 // controlles locust instance in provided url.
 func controlLocust(cr *locustloadv1alpha1.Locust ) error {
-	locustController, err := lc.New(cr.Spec.HostUrl)
+	locustController, err := lc.New(cr.Spec.HostURL)
 	if err != nil {
 		return err
 	}
