@@ -1,4 +1,4 @@
-# locust-operator-opsdk
+# locust-operator
 
 ## operator creation
 
@@ -34,6 +34,6 @@ kubectl create -f deploy/operator.yaml
 ```
 kubectl get pods
 NAME                                     READY   STATUS    RESTARTS   AGE
-locust-operator-opsdk-5fb99cfd9b-k5w4b   1/1     Running   0          118s
+locust-operator-5fb99cfd9b-k5w4b   1/1     Running   0          118s
 
 ```

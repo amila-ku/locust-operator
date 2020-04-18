@@ -3,7 +3,7 @@ package locust
 import (
 	"context"
 
-	locustloadv1alpha1 "github.com/amila-ku/locust-operator-opsdk/pkg/apis/locustload/v1alpha1"
+	locustloadv1alpha1 "github.com/amila-ku/locust-operator/pkg/apis/locustload/v1alpha1"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -245,7 +245,7 @@ func (r *ReconcileLocust) deploymentForLocustSlaves(cr *locustloadv1alpha1.Locus
 					Containers: []corev1.Container{{
 						Image:   cr.Spec.Image,
 						Name:    cr.Name + "-slave",
-						Command: []string{"Locust", "--host", "unused", "--slave", "--master-host", "locust-service", "-f", "/tasks/main.py"},
+						//Command: []string{"Locust", "--host", "unused", "--slave", "--master-host", cr.Name + "-slave", "-f", "/tasks/main.py"},
 					}},
 				},
 			},

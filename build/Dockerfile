@@ -1,11 +1,11 @@
 FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
 
-ENV OPERATOR=/usr/local/bin/locust-operator-opsdk \
+ENV OPERATOR=/usr/local/bin/locust-operator \
     USER_UID=1001 \
-    USER_NAME=locust-operator-opsdk
+    USER_NAME=locust-operator
 
 # install operator binary
-COPY build/_output/bin/locust-operator-opsdk ${OPERATOR}
+COPY build/_output/bin/locust-operator ${OPERATOR}
 
 COPY build/bin /usr/local/bin
 RUN  /usr/local/bin/user_setup

@@ -1,7 +1,7 @@
 package apis
 
 import (
-	"github.com/amila-ku/locust-operator-opsdk/pkg/apis/locustload/v1alpha1"
+	"github.com/amila-ku/locust-operator/pkg/apis/locustload/v1alpha1"
 )
 
 func init() {

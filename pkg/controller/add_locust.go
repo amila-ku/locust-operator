@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"github.com/amila-ku/locust-operator-opsdk/pkg/controller/locust"
+	"github.com/amila-ku/locust-operator/pkg/controller/locust"
 )
 
 func init() {
