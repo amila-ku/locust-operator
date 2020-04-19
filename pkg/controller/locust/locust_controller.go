@@ -99,7 +99,7 @@ func (r *ReconcileLocust) Reconcile(request reconcile.Request) (reconcile.Result
 		return reconcile.Result{}, err
 	}
 
-	// Define a new Pod object
+	// Define a new Deployment object
 	// pod := newPodForCR(instance)
 	deployment := r.deploymentForLocust(instance)
 
@@ -109,10 +109,10 @@ func (r *ReconcileLocust) Reconcile(request reconcile.Request) (reconcile.Result
 	}
 
 	// Check if this Deployment already exists
-	found := &corev1.Pod{}
+	found := &appsv1.Deployment{}
 	err = r.client.Get(context.TODO(), types.NamespacedName{Name: deployment.Name, Namespace: deployment.Namespace}, found)
 	if err != nil && errors.IsNotFound(err) {
-		reqLogger.Info("Creating a new Deployment", "Pod.Namespace", deployment.Namespace, "Deployment.Name", deployment.Name)
+		reqLogger.Info("Creating a new Deployment", "Deployment.Namespace", deployment.Namespace, "Deployment.Name", deployment.Name)
 		err = r.client.Create(context.TODO(), deployment)
 		if err != nil {
 			return reconcile.Result{}, err
@@ -126,6 +126,63 @@ func (r *ReconcileLocust) Reconcile(request reconcile.Request) (reconcile.Result
 
 	// Deployment already exists - don't requeue
 	reqLogger.Info("Skip reconcile: Deployment already exists", "Deployment.Namespace", found.Namespace, "Deployment.Name", found.Name)
+
+	// Service
+	service := r.serviceForLocust(instance)
+
+	// Set Locust instance as the owner and controller
+	if err := controllerutil.SetControllerReference(instance, service, r.scheme); err != nil {
+		return reconcile.Result{}, err
+	}
+
+	// Check if this Service already exists
+	foundsvc := &corev1.Service{}
+	err = r.client.Get(context.TODO(), types.NamespacedName{Name: service.Name, Namespace: service.Namespace}, foundsvc)
+	if err != nil && errors.IsNotFound(err) {
+		reqLogger.Info("Creating a new Service", "Service.Namespace", service.Namespace, "Service.Name", service.Name)
+		err = r.client.Create(context.TODO(), service)
+		if err != nil {
+			return reconcile.Result{}, err
+		}
+
+		// Service created successfully - don't requeue
+		return reconcile.Result{}, nil
+	} else if err != nil {
+		return reconcile.Result{}, err
+	}
+
+	// Service already exists - don't requeue
+	reqLogger.Info("Skip reconcile: Service already exists", "Service.Namespace", foundsvc.Namespace, "Service.Name", foundsvc.Name)
+
+	// Locust worker deployment, limit for maximum number of slaves set to 30 
+	if instance.Spec.Slaves != 0 && instance.Spec.Slaves < 30 {
+		slavedeployment := r.deploymentForLocust(instance)
+
+		// Set Locust instance as the owner and controller
+		if err := controllerutil.SetControllerReference(instance, slavedeployment, r.scheme); err != nil {
+			return reconcile.Result{}, err
+		}
+	
+		// Check if this Deployment already exists
+		foundslaves := &appsv1.Deployment{}
+		err = r.client.Get(context.TODO(), types.NamespacedName{Name: slavedeployment.Name, Namespace: slavedeployment.Namespace}, foundslaves)
+		if err != nil && errors.IsNotFound(err) {
+			reqLogger.Info("Creating a new Locust Worker Deployment", "Deployment.Namespace", slavedeployment.Namespace, "Deployment.Name", slavedeployment.Name)
+			err = r.client.Create(context.TODO(), slavedeployment)
+			if err != nil {
+				return reconcile.Result{}, err
+			}
+	
+			// Deployment created successfully - don't requeue
+			return reconcile.Result{}, nil
+		} else if err != nil {
+			return reconcile.Result{}, err
+		}
+	
+		// Deployment already exists - don't requeue
+		reqLogger.Info("Skip reconcile: Locust Worker Deployment already exists", "Deployment.Namespace", foundslaves.Namespace, "Deployment.Name", foundslaves.Name)
+
+	}
 
 	// Start load
 	err = controlLocust(instance)
