@@ -1,5 +1,12 @@
 # locust-operator-opsdk
 
+## Introduction
+The purpose of this project is to provide a easy to deploy version of locust.io which also contains additional/useful features that are required.
+
+Locust can be created in two different deployments
+ - cluster: creates a single master with multiple workers.
+ - standalone: only master instance of locust created.
+
 ## operator creation
 
 commands
@@ -19,6 +26,10 @@ docker push quay.io/amila_ku/locust-operator:v0.0.1
 docker tag quay.io/amila_ku/locust-operator:v0.0.3 amilaku/locust-operator:v0.0.3
 
 docker push amilaku/locust-operator:v0.0.1
+```
+## Deploy CRD
+
+```
 kubectl apply -f deploy/crds/locustload.cndev.io_locusts_crd.yaml 
 
 kubectl get crds
@@ -36,4 +47,20 @@ kubectl get pods
 NAME                                     READY   STATUS    RESTARTS   AGE
 locust-operator-opsdk-5fb99cfd9b-k5w4b   1/1     Running   0          118s
 
+```
+
+### create CR
+
+```
+apiVersion: locustload.cndev.io/v1alpha1
+kind: Locust
+metadata:
+  name: example-locust
+spec:
+  # Add fields here
+  size: 3
+  image: amilaku/locust:v0.0.1
+  hosturl: https://www.google.com
+  users: 2
+  hatchrate: 1
 ```
