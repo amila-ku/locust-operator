@@ -6,27 +6,37 @@ The purpose of this project is to provide a easy to deploy version of locust.io 
 Locust can be created in two different deployments
  - cluster: creates a single master with multiple workers.
  - standalone: only master instance of locust created.
+ 
+## status
 
-## operator creation
+![](https://github.com/amila-ku/locust-operator/workflows/build%20latest%20on%20push%20to%20master%20and%20release/badge.svg)
+[![Go Report Card](https://goreportcard.com/badge/github.com/amila-ku/locust-operator)](https://goreportcard.com/report/github.com/amila-ku/locust-operator)
+
+## operator build
 
 commands
 
 ```
-operator-sdk generate k8s
-operator-sdk generate crds
-
-operator-sdk add controller --api-version=locustload.cndev.io/v1alpha1 --kind=Locust
-
 operator-sdk build quay.io/amila_ku/locust-operator:v0.0.1
 
-sed -i 's|REPLACE_IMAGE|quay.io/amila_ku/locust-operator:v0.0.1|g' deploy/operator.yaml
+```
 
+## push docker image to repo
+
+```
 docker push quay.io/amila_ku/locust-operator:v0.0.1
 
-docker tag quay.io/amila_ku/locust-operator:v0.0.3 amilaku/locust-operator:v0.0.3
+docker tag quay.io/amila_ku/locust-operator:v0.0.1 amilaku/locust-operator:v0.0.1
 
 docker push amilaku/locust-operator:v0.0.1
 ```
+
+## Update CRD
+
+```
+sed -i 's|REPLACE_IMAGE|quay.io/amila_ku/locust-operator:v0.0.1|g' deploy/operator.yaml
+```
+
 ## Deploy CRD
 
 ```
@@ -63,4 +73,22 @@ spec:
   hosturl: https://www.google.com
   users: 2
   hatchrate: 1
+```
+
+### Regenerate resources
+
+```
+operator-sdk generate k8s
+operator-sdk generate crds
+
+```
+
+### Add new controller
+
+```
+operator-sdk add controller --api-version=locustload.cndev.io/v1alpha1 --kind=Locust
+
+operator-sdk build quay.io/amila_ku/locust-operator:v0.0.1
+
+sed -i 's|REPLACE_IMAGE|quay.io/amila_ku/locust-operator:v0.0.1|g' deploy/operator.yaml
 ```
