@@ -1,4 +1,4 @@
-module github.com/amila-ku/locust-operator-opsdk
+module github.com/amila-ku/locust-operator
 
 go 1.13
 

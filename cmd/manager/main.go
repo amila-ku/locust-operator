@@ -11,9 +11,9 @@ import (
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
 	"k8s.io/client-go/rest"
 
-	"github.com/amila-ku/locust-operator-opsdk/pkg/apis"
-	"github.com/amila-ku/locust-operator-opsdk/pkg/controller"
-	"github.com/amila-ku/locust-operator-opsdk/version"
+	"github.com/amila-ku/locust-operator/pkg/apis"
+	"github.com/amila-ku/locust-operator/pkg/controller"
+	"github.com/amila-ku/locust-operator/version"
 
 	"github.com/operator-framework/operator-sdk/pkg/k8sutil"
 	kubemetrics "github.com/operator-framework/operator-sdk/pkg/kube-metrics"
@@ -84,7 +84,7 @@ func main() {
 
 	ctx := context.TODO()
 	// Become the leader before proceeding
-	err = leader.Become(ctx, "locust-operator-opsdk-lock")
+	err = leader.Become(ctx, "locust-operator-lock")
 	if err != nil {
 		log.Error(err, "")
 		os.Exit(1)

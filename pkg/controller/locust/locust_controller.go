@@ -3,7 +3,7 @@ package locust
 import (
 	"context"
 
-	locustloadv1alpha1 "github.com/amila-ku/locust-operator-opsdk/pkg/apis/locustload/v1alpha1"
+	locustloadv1alpha1 "github.com/amila-ku/locust-operator/pkg/apis/locustload/v1alpha1"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -99,7 +99,7 @@ func (r *ReconcileLocust) Reconcile(request reconcile.Request) (reconcile.Result
 		return reconcile.Result{}, err
 	}
 
-	// Define a new Pod object
+	// Define a new Deployment object
 	// pod := newPodForCR(instance)
 	deployment := r.deploymentForLocust(instance)
 
@@ -109,10 +109,10 @@ func (r *ReconcileLocust) Reconcile(request reconcile.Request) (reconcile.Result
 	}
 
 	// Check if this Deployment already exists
-	found := &corev1.Pod{}
+	found := &appsv1.Deployment{}
 	err = r.client.Get(context.TODO(), types.NamespacedName{Name: deployment.Name, Namespace: deployment.Namespace}, found)
 	if err != nil && errors.IsNotFound(err) {
-		reqLogger.Info("Creating a new Deployment", "Pod.Namespace", deployment.Namespace, "Deployment.Name", deployment.Name)
+		reqLogger.Info("Creating a new Deployment", "Deployment.Namespace", deployment.Namespace, "Deployment.Name", deployment.Name)
 		err = r.client.Create(context.TODO(), deployment)
 		if err != nil {
 			return reconcile.Result{}, err
@@ -126,6 +126,63 @@ func (r *ReconcileLocust) Reconcile(request reconcile.Request) (reconcile.Result
 
 	// Deployment already exists - don't requeue
 	reqLogger.Info("Skip reconcile: Deployment already exists", "Deployment.Namespace", found.Namespace, "Deployment.Name", found.Name)
+
+	// Service
+	service := r.serviceForLocust(instance)
+
+	// Set Locust instance as the owner and controller
+	if err := controllerutil.SetControllerReference(instance, service, r.scheme); err != nil {
+		return reconcile.Result{}, err
+	}
+
+	// Check if this Service already exists
+	foundsvc := &corev1.Service{}
+	err = r.client.Get(context.TODO(), types.NamespacedName{Name: service.Name, Namespace: service.Namespace}, foundsvc)
+	if err != nil && errors.IsNotFound(err) {
+		reqLogger.Info("Creating a new Service", "Service.Namespace", service.Namespace, "Service.Name", service.Name)
+		err = r.client.Create(context.TODO(), service)
+		if err != nil {
+			return reconcile.Result{}, err
+		}
+
+		// Service created successfully - don't requeue
+		return reconcile.Result{}, nil
+	} else if err != nil {
+		return reconcile.Result{}, err
+	}
+
+	// Service already exists - don't requeue
+	reqLogger.Info("Skip reconcile: Service already exists", "Service.Namespace", foundsvc.Namespace, "Service.Name", foundsvc.Name)
+
+	// Locust worker deployment, limit for maximum number of slaves set to 30 
+	if instance.Spec.Slaves != 0 && instance.Spec.Slaves < 30 {
+		slavedeployment := r.deploymentForLocust(instance)
+
+		// Set Locust instance as the owner and controller
+		if err := controllerutil.SetControllerReference(instance, slavedeployment, r.scheme); err != nil {
+			return reconcile.Result{}, err
+		}
+	
+		// Check if this Deployment already exists
+		foundslaves := &appsv1.Deployment{}
+		err = r.client.Get(context.TODO(), types.NamespacedName{Name: slavedeployment.Name, Namespace: slavedeployment.Namespace}, foundslaves)
+		if err != nil && errors.IsNotFound(err) {
+			reqLogger.Info("Creating a new Locust Worker Deployment", "Deployment.Namespace", slavedeployment.Namespace, "Deployment.Name", slavedeployment.Name)
+			err = r.client.Create(context.TODO(), slavedeployment)
+			if err != nil {
+				return reconcile.Result{}, err
+			}
+	
+			// Deployment created successfully - don't requeue
+			return reconcile.Result{}, nil
+		} else if err != nil {
+			return reconcile.Result{}, err
+		}
+	
+		// Deployment already exists - don't requeue
+		reqLogger.Info("Skip reconcile: Locust Worker Deployment already exists", "Deployment.Namespace", foundslaves.Namespace, "Deployment.Name", foundslaves.Name)
+
+	}
 
 	// Start load
 	err = controlLocust(instance)
@@ -198,7 +255,7 @@ func (r *ReconcileLocust) deploymentForLocust(cr *locustloadv1alpha1.Locust) *ap
 						Env: []corev1.EnvVar{
 							{
 								Name:       "TARGET_HOST",
-								Value:      cr.Spec.HostUrl,
+								Value:      cr.Spec.HostURL,
 							},
 						},
 						Ports: []corev1.ContainerPort{
@@ -206,6 +263,11 @@ func (r *ReconcileLocust) deploymentForLocust(cr *locustloadv1alpha1.Locust) *ap
 								Name:          "http",
 								Protocol:      corev1.ProtocolTCP,
 								ContainerPort: 8089,
+							},
+							{
+								Name:          "slave",
+								Protocol:      corev1.ProtocolTCP,
+								ContainerPort: 5557,
 							},
 						},
 					}},
@@ -218,6 +280,68 @@ func (r *ReconcileLocust) deploymentForLocust(cr *locustloadv1alpha1.Locust) *ap
 	return dep
 }
 
+// deploymentForLocustSlaves returns a Locust Deployment object
+func (r *ReconcileLocust) deploymentForLocustSlaves(cr *locustloadv1alpha1.Locust) *appsv1.Deployment {
+	ls := labelsForLocust(cr.Name)
+
+	dep := &appsv1.Deployment{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      cr.Name + "-slave",
+			Namespace: cr.Namespace,
+		},
+		Spec: appsv1.DeploymentSpec{
+			Replicas: &cr.Spec.Slaves,
+			Selector: &metav1.LabelSelector{
+				MatchLabels: ls,
+			},
+			Template: corev1.PodTemplateSpec{
+				ObjectMeta: metav1.ObjectMeta{
+					Labels: ls,
+				},
+				Spec: corev1.PodSpec{
+					Containers: []corev1.Container{{
+						Image:   cr.Spec.Image,
+						Name:    cr.Name + "-slave",
+						Command: []string{"Locust", "--host", "unused", "--slave", "--master-host", cr.Name + "-slave", "-f", "/tasks/main.py"},
+					}},
+				},
+			},
+		},
+	}
+	// Set Locust instance as the owner and controller
+	controllerutil.SetControllerReference(cr, dep, r.scheme)
+	return dep
+}
+
+// serviceForLocust returns a Service object
+func (r *ReconcileLocust) serviceForLocust(cr *locustloadv1alpha1.Locust) *corev1.Service {
+	ls := labelsForLocust(cr.Name)
+
+	svc := &corev1.Service{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      cr.Name + "-service",
+			Namespace: cr.Namespace,
+		},
+		Spec: corev1.ServiceSpec{
+			Selector: ls,
+			Ports: []corev1.ServicePort{
+				{
+					Name:          "http",
+					Protocol:      corev1.ProtocolTCP,
+					Port: 8089,
+				},
+				{
+					Name:          "slave",
+					Protocol:      corev1.ProtocolTCP,
+					Port: 5557,
+				},
+			},
+		},
+	}
+	// Set Locust instance as the owner and controller
+	controllerutil.SetControllerReference(cr, svc, r.scheme)
+	return svc
+}
 // labelsForLocust returns the labels for selecting the resources
 // belonging to the given Locust CR name.
 func labelsForLocust(name string) map[string]string {
@@ -235,7 +359,7 @@ func getPodNames(pods []corev1.Pod) []string {
 
 // controlles locust instance in provided url.
 func controlLocust(cr *locustloadv1alpha1.Locust ) error {
-	locustController, err := lc.New(cr.Spec.HostUrl)
+	locustController, err := lc.New(cr.Spec.HostURL)
 	if err != nil {
 		return err
 	}
