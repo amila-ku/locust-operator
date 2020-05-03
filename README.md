@@ -9,7 +9,7 @@ Locust can be created in two different deployments
  
 ## status
 
-![](https://github.com/amila-ku/locust-operator/workflows/build%20latest%20on%20push%20to%20master%20and%20release/badge.svg)
+![](https://github.com/amila-ku/locust-operator/workflows/build/badge.svg)
 [![Go Report Card](https://goreportcard.com/badge/github.com/amila-ku/locust-operator)](https://goreportcard.com/report/github.com/amila-ku/locust-operator)
 
 ## operator build
