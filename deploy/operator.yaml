@@ -16,7 +16,7 @@ spec:
       containers:
         - name: locust-operator
           # Replace this with the built image name
-          image: docker.io/amilaku/locust-operator:v0.0.3
+          image: docker.io/amilaku/locust-operator:v0.0.4
           command:
           - locust-operator
           imagePullPolicy: Always

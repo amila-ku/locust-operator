@@ -40,6 +40,10 @@ spec:
             image:
               description: Image is the container with locust files tests
               type: string
+            slaves:
+              description: Slaves is the number of worker instances
+              format: int32
+              type: integer
             users:
               description: Users is the maximum number of users to simulate
               type: integer

@@ -4,7 +4,7 @@ metadata:
   name: example-locust
 spec:
   # Add fields here
-  size: 3
+  slaves: 2
   image: amilaku/locust:v0.0.1
   hosturl: https://www.google.com
   users: 2

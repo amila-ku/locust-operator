@@ -156,7 +156,7 @@ func (r *ReconcileLocust) Reconcile(request reconcile.Request) (reconcile.Result
 
 	// Locust worker deployment, limit for maximum number of slaves set to 30 
 	if instance.Spec.Slaves != 0 && instance.Spec.Slaves < 30 {
-		slavedeployment := r.deploymentForLocust(instance)
+		slavedeployment := r.deploymentForLocustSlaves(instance)
 
 		// Set Locust instance as the owner and controller
 		if err := controllerutil.SetControllerReference(instance, slavedeployment, r.scheme); err != nil {
@@ -185,47 +185,12 @@ func (r *ReconcileLocust) Reconcile(request reconcile.Request) (reconcile.Result
 	}
 
 	// Start load
-	err = controlLocust(instance)
-	if err != nil {
-		return reconcile.Result{}, err
-	}
+	// err = controlLocust(instance)
+	// if err != nil {
+	// 	return reconcile.Result{}, err
+	// }
 
 	return reconcile.Result{}, nil
-}
-
-// newPodForCR returns a busybox pod with the same name/namespace as the cr
-func newPodForCR(cr *locustloadv1alpha1.Locust) *corev1.Pod {
-	labels := map[string]string{
-		"app": cr.Name,
-	}
-	return &corev1.Pod{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      cr.Name + "-pod",
-			Namespace: cr.Namespace,
-			Labels:    labels,
-		},
-		Spec: corev1.PodSpec{
-			Containers: []corev1.Container{
-				{
-					Name:    "locust",
-					Env: []corev1.EnvVar{
-						{
-							Name:       "TARGET_HOST",
-							Value:      "https://www.google.com/",
-						},
-					},
-					Image:   cr.Spec.Image,
-					Ports: []corev1.ContainerPort{
-						{
-							Name:          "http",
-							Protocol:      corev1.ProtocolTCP,
-							ContainerPort: 8089,
-						},
-					},
-				},
-			},
-		},
-	}
 }
 
 // deploymentForLocust returns a Locust Deployment object
@@ -282,7 +247,7 @@ func (r *ReconcileLocust) deploymentForLocust(cr *locustloadv1alpha1.Locust) *ap
 
 // deploymentForLocustSlaves returns a Locust Deployment object
 func (r *ReconcileLocust) deploymentForLocustSlaves(cr *locustloadv1alpha1.Locust) *appsv1.Deployment {
-	ls := labelsForLocust(cr.Name)
+	ls := labelsForLocust(cr.Name + "-slave")
 
 	dep := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
@@ -302,7 +267,7 @@ func (r *ReconcileLocust) deploymentForLocustSlaves(cr *locustloadv1alpha1.Locus
 					Containers: []corev1.Container{{
 						Image:   cr.Spec.Image,
 						Name:    cr.Name + "-slave",
-						Command: []string{"Locust", "--host", "unused", "--slave", "--master-host", cr.Name + "-slave", "-f", "/tasks/main.py"},
+						Command: []string{"locust", "--host", "unused", "--slave", "--master-host", cr.Name + "-slave", "-f", "/tasks/main.py"},
 					}},
 				},
 			},
