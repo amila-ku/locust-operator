@@ -4,7 +4,7 @@ FROM python:3-slim
 RUN apt update && apt install -y build-essential
 
 # Install locust
-RUN pip install locustio==0.14.4
+RUN pip install locustio==0.14.6
 
 # Copy task files
 COPY tasks /tasks
