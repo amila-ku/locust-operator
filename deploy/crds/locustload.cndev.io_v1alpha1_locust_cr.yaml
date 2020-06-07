@@ -6,6 +6,6 @@ spec:
   # Add fields here
   slaves: 2
   image: amilaku/locust:v0.0.1
-  hosturl: https://www.google.com
+  hosturl: https://postman-echo.com
   users: 2
   hatchrate: 1

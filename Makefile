@@ -3,7 +3,7 @@ VERSION ?= v0.0.3
 
 clean:
 	kubectl delete deployment locust-operator
-	kubectl delete crd locustload.cndev.io
+	kubectl delete locust example-locust
 
 generate:
 	operator-sdk generate k8s
@@ -13,6 +13,7 @@ delete-crd:
 	kubectl delete crd locustload.cndev.io
 
 create-cr:
+	kubectl create -f deploy/operator.yaml
 	kubectl create -f deploy/crds/locustload.cndev.io_v1alpha1_locust_cr.yaml 
 
 apply-resources:
@@ -33,6 +34,6 @@ build-img:
 
 rel:
 	git tag ${VERSION}
-	git push origin ${VERSION}
+	git push origin --tags
 
 
