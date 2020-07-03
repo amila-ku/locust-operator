@@ -4,4 +4,4 @@ FROM locustio/locust:1.1
 COPY tasks /tasks
 
 # Start Locust 
-CMD ["locust", "-f", "/tasks/main.py" ] 
+CMD ["-f", "/tasks/main.py" ] 
