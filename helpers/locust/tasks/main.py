@@ -1,25 +1,21 @@
 import uuid
 
-from datetime import datetime
-from locust import HttpLocust, TaskSet, task
 
+import random
+from locust import HttpUser, task, between
 
-class MetricsTaskSet(TaskSet):
-    _deviceid = None
+class QuickstartUser(HttpUser):
+    wait_time = between(5, 9)
+
+    @task
+    def index_page(self):
+        self.client.get("/get?foo1=bar1")
+        self.client.get("/get?foo2=bar2")
+
+    @task(3)
+    def view_item(self):
+        item_id = random.randint(1, 10000)
+        self.client.get(f"/get?id={item_id}", timeout=30)
 
     def on_start(self):
-        self._deviceid = str(uuid.uuid4())
-
-    @task(1)
-    def get_request(self):
-        self.client.get(
-            '/get?foo1=bar1&foo2=bar2', timeout=30)
-
-    @task(99)
-    def post_metrics(self):
-        self.client.post(
-            "/post", {"deviceid": self._deviceid, "timestamp": datetime.now()})
-
-
-class MetricsLocust(HttpLocust):
-    task_set = MetricsTaskSet
+        self.client.post("/post", {"deviceid": self._deviceid, "timestamp": datetime.now()})
