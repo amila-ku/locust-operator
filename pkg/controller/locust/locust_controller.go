@@ -216,7 +216,7 @@ func (r *ReconcileLocust) deploymentForLocust(cr *locustloadv1alpha1.Locust) *ap
 					Containers: []corev1.Container{{
 						Image:   cr.Spec.Image,
 						Name:    cr.Name,
-						Command: []string{"locust", "--host", "unused", "--master", "-f", "tasks/main.py"},
+						Command: []string{"--master", "-f", "tasks/main.py"},
 						Env: []corev1.EnvVar{
 							{
 								Name:       "TARGET_HOST",
@@ -230,12 +230,12 @@ func (r *ReconcileLocust) deploymentForLocust(cr *locustloadv1alpha1.Locust) *ap
 								ContainerPort: 8089,
 							},
 							{
-								Name:          "slave-1",
+								Name:          "worker-1",
 								Protocol:      corev1.ProtocolTCP,
 								ContainerPort: 5557,
 							},
 							{
-								Name:          "slave-2",
+								Name:          "worker-2",
 								Protocol:      corev1.ProtocolTCP,
 								ContainerPort: 5558,
 							},
@@ -252,11 +252,11 @@ func (r *ReconcileLocust) deploymentForLocust(cr *locustloadv1alpha1.Locust) *ap
 
 // deploymentForLocustSlaves returns a Locust Deployment object
 func (r *ReconcileLocust) deploymentForLocustSlaves(cr *locustloadv1alpha1.Locust) *appsv1.Deployment {
-	ls := labelsForLocust(cr.Name + "-slave")
+	ls := labelsForLocust(cr.Name + "-worker")
 
 	dep := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      cr.Name + "-slave",
+			Name:      cr.Name + "-worker",
 			Namespace: cr.Namespace,
 		},
 		Spec: appsv1.DeploymentSpec{
@@ -271,8 +271,8 @@ func (r *ReconcileLocust) deploymentForLocustSlaves(cr *locustloadv1alpha1.Locus
 				Spec: corev1.PodSpec{
 					Containers: []corev1.Container{{
 						Image:   cr.Spec.Image,
-						Name:    cr.Name + "-slave",
-						Command: []string{"locust", "--host", "unused", "--slave", "--master-host", cr.Name + "-service", "-f", "/tasks/main.py"},
+						Name:    cr.Name + "-worker",
+						Command: []string{"--worker", "--master-host", cr.Name + "-service", "-f", "/tasks/main.py"},
 					}},
 				},
 			},
@@ -301,12 +301,12 @@ func (r *ReconcileLocust) serviceForLocust(cr *locustloadv1alpha1.Locust) *corev
 					Port: 8089,
 				},
 				{
-					Name:          "slave-1",
+					Name:          "worker-1",
 					Protocol:      corev1.ProtocolTCP,
 					Port: 5557,
 				},
 				{
-					Name:          "slave-2",
+					Name:          "worker-2",
 					Protocol:      corev1.ProtocolTCP,
 					Port: 5558,
 				},
