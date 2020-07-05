@@ -1,8 +1,7 @@
 import uuid
-
-
 import random
 from locust import HttpUser, task, between
+from datetime import datetime
 
 class QuickstartUser(HttpUser):
     wait_time = between(5, 9)
@@ -18,4 +17,4 @@ class QuickstartUser(HttpUser):
         self.client.get(f"/get?id={item_id}", timeout=30)
 
     def on_start(self):
-        self.client.post("/post", {"deviceid": self._deviceid, "timestamp": datetime.now()})
+        self.client.post("/post", {"deviceid": "0111", "timestamp": datetime.now()})
