@@ -216,7 +216,7 @@ func (r *ReconcileLocust) deploymentForLocust(cr *locustloadv1alpha1.Locust) *ap
 					Containers: []corev1.Container{{
 						Image:   cr.Spec.Image,
 						Name:    cr.Name,
-						Command: []string{"--master", "-f", "tasks/main.py"},
+						Command: []string{"--master", "-f", "/tasks/main.py", "-H", cr.Spec.HostURL},
 						Env: []corev1.EnvVar{
 							{
 								Name:       "TARGET_HOST",
