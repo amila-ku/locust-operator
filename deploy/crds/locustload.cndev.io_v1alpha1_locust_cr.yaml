@@ -5,7 +5,7 @@ metadata:
 spec:
   # Add fields here
   slaves: 2
-  image: amilaku/locust:v0.0.1
+  image: amilaku/locust:v0.0.2
   hosturl: https://postman-echo.com
   users: 2
   hatchrate: 1
