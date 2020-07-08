@@ -48,6 +48,8 @@ locust-operator-5fb99cfd9b-k5w4b   1/1     Running   0          118s
 
 ```
 
+# Create Locust Custom Resources
+
 ### create CR
 
 Deployment of locust master only
@@ -79,3 +81,9 @@ spec:
   hosturl: https://postman-echo.com
 
 ```
+
+## To Do 
+
+- Load Generation per given rate
+- Prescale deployments in a Kubernetes cluster
+- Generate Report
