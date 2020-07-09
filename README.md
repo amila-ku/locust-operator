@@ -1,9 +1,12 @@
 # locust-operator
 
 ## Introduction
-The purpose of this project is to provide a easy to deploy version of locust.io.
+Performing loadtests require lot of effort and preperation, inorder to generate traffic similar to production environment a distributed load generation tool would have to be used. [Locust](https://locust.io/) is a very popular load generation tool which supports writing test cases in python. The purpose of this project is to provide ready to use solution of locust.io for performing distributed load testing.
 
-Locust can be created in two different deployments
+## Guides on load testing 
+ - [Distributed Loadtesting with Locust](https://cloud.google.com/solutions/distributed-load-testing-using-gke)
+
+Locust Operator supports two different deployments setups for locust.
  - cluster: creates a single master with multiple workers.
  - standalone: only master instance of locust created.
  
@@ -12,28 +15,15 @@ Locust can be created in two different deployments
 ![](https://github.com/amila-ku/locust-operator/workflows/build/badge.svg)
 [![Go Report Card](https://goreportcard.com/badge/github.com/amila-ku/locust-operator)](https://goreportcard.com/report/github.com/amila-ku/locust-operator)
 
-## build operator
+# How to install Locust Operator
 
-commands
-
-```
-make build-img
-
-```
-
-### push docker image to repo
-
-```
-make push-img
-```
-
-## Create related dependencies
+## Create related dependencies for the operator
 
 ```
 make apply-resources
 ```
 
-## Deploy CRDs
+## Deploy CRD to a kubernetes cluster
 
 ```
 make create-crd
@@ -83,7 +73,24 @@ spec:
 ```
 
 ## To Do 
-
-- Load Generation per given rate
-- Prescale deployments in a Kubernetes cluster
+- Autoscale locust workers with HPA.
+- Load Generation per given rate.
+- Prescale application deployments in a Kubernetes cluster before starting load test.
 - Generate Report
+
+# Developers
+
+## build operator
+
+commands
+
+```
+make build-img
+
+```
+
+### push docker image to repo
+
+```
+make push-img
+```
