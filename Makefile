@@ -1,5 +1,5 @@
 SHELL = bash
-VERSION ?= v0.0.4
+VERSION ?= v0.0.5
 
 clean:
 	kubectl delete deployment locust-operator

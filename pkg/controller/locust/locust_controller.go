@@ -19,7 +19,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 	"sigs.k8s.io/controller-runtime/pkg/source"
 
-	lc "github.com/amila-ku/locust-client"
+	lc "github.com/amila-ku/go-locust-client"
 )
 
 var log = logf.Log.WithName("controller_locust")
@@ -343,16 +343,16 @@ func controlLocust(cr *locustloadv1alpha1.Locust ) error {
 		return err
 	}
 
-	lcstatus, err := locust.GetStatus()
+	lcstat, err := locust.Stats()
 	if err != nil {
 		return err
 	}
 
-	if lcstatus.UserCount == cr.Spec.Users {
+	if lcstat.UserCount == cr.Spec.Users {
 		return nil
 	}
 
-	_, err = locust.GenerateLoad(cr.Spec.Users, cr.Spec.HatchRate)
+	_, err = locust.GenerateLoad(cr.Spec.Users, float64(cr.Spec.HatchRate))
 	if err != nil {
 		return err
 	}
