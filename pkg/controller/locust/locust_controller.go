@@ -184,9 +184,13 @@ func (r *ReconcileLocust) Reconcile(request reconcile.Request) (reconcile.Result
 
 	}
 
-	// Start load
+	// Start load generation
+	// reqLogger.Info("Start Locust load generation", "Number of users", instance.Spec.Users, "Hatch Rate", instance.Spec.HatchRate)
 	// err = controlLocust(instance)
+
+	// failed to control locust
 	// if err != nil {
+	// 	reqLogger.Info("Failed to Start Locust load generation", "Number of users", instance.Spec.Users, "Hatch Rate", instance.Spec.HatchRate)
 	// 	return reconcile.Result{}, err
 	// }
 
@@ -334,11 +338,21 @@ func getPodNames(pods []corev1.Pod) []string {
 
 // controlles locust instance in provided url.
 func controlLocust(cr *locustloadv1alpha1.Locust ) error {
-	locustController, err := lc.New(cr.Spec.HostURL)
+	locust, err := lc.New(cr.Spec.HostURL)
 	if err != nil {
 		return err
 	}
-	_, err = locustController.StartLoad(cr.Spec.Users, cr.Spec.HatchRate)
+
+	lcstatus, err := locust.GetStatus()
+	if err != nil {
+		return err
+	}
+
+	if lcstatus.UserCount == cr.Spec.Users {
+		return nil
+	}
+
+	_, err = locust.GenerateLoad(cr.Spec.Users, cr.Spec.HatchRate)
 	if err != nil {
 		return err
 	}
