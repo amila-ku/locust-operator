@@ -40,6 +40,12 @@ locust-operator-5fb99cfd9b-k5w4b   1/1     Running   0          118s
 
 # Create Locust Custom Resources
 
+### load test scripts
+
+Load test scripts has to be created with locust, instrictions on setting up a few test scenarios are shown [here](https://docs.locust.io/en/stable/quickstart.html)
+
+Once the locust script is completed it has to be packaged as a docker container, we use this container when defining the custom resource locust operator. An example is available [here](https://github.com/amila-ku/locust-operator/tree/master/helpers/locust)
+
 ### create CR
 
 Deployment of locust master only
@@ -50,7 +56,7 @@ kind: Locust
 metadata:
   name: example-locust
 spec:
-  image: amilaku/locust:v0.0.1
+  image: <dockerrepository>/<image-name>:v0.0.1
   hosturl: https://postman-echo.com
 
 
@@ -81,6 +87,11 @@ spec:
 # Developers
 
 ## build operator
+
+### Prerequisites
+
+Before starting you must have golang 1.13 or higher installed, then install operator framework by following [installation instructions](https://sdk.operatorframework.io/docs/install-operator-sdk/).
+
 
 commands
 
