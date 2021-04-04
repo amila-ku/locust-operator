@@ -19,6 +19,8 @@ type LocustSpec struct {
 	HatchRate int `json:"hatchrate,omitempty"`
 	//Slaves is the number of worker instances
 	Slaves int32 `json:"slaves,omitempty"` 
+	//MaxSlaves is the number of maximum worker instances
+	MaxSlaves int32 `json:"maxSlaves,omitempty"` 
 
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file

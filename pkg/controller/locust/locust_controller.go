@@ -6,6 +6,8 @@ import (
 	locustloadv1alpha1 "github.com/amila-ku/locust-operator/pkg/apis/locustload/v1alpha1"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
+	ascalingv1 "k8s.io/api/autoscaling/v1"
+	//ascalingv1 "k8s.io/api/autoscaling/v1/crossver"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -321,6 +323,35 @@ func (r *ReconcileLocust) serviceForLocust(cr *locustloadv1alpha1.Locust) *corev
 	controllerutil.SetControllerReference(cr, svc, r.scheme)
 	return svc
 }
+
+// hpaForLocust creates a horizontal pod autoscaler in kubernetes for locust slaves
+func (r *ReconcileLocust) hpaForLocust(cr *locustloadv1alpha1.Locust) *ascalingv1.HorizontalPodAutoscaler {
+	ls := labelsForLocust(cr.Name)
+	targetCPUUtilization := int32Ptr(60)
+
+
+	svc := &ascalingv1.HorizontalPodAutoscaler{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      cr.Name + "-service",
+			Namespace: cr.Namespace,
+			Labels: ls,
+		},
+		Spec: ascalingv1.HorizontalPodAutoscalerSpec{
+			ScaleTargetRef: ascalingv1.CrossVersionObjectReference {
+				Kind: "Deployment",
+				Name: cr.Name + "-worker",
+			},
+			MinReplicas: &cr.Spec.Slaves,
+			MaxReplicas: cr.Spec.MaxSlaves,
+			TargetCPUUtilizationPercentage: targetCPUUtilization,
+		},
+		
+	}
+	// Set Locust instance as the owner and controller
+	controllerutil.SetControllerReference(cr, svc, r.scheme)
+	return svc
+}
+
 // labelsForLocust returns the labels for selecting the resources
 // belonging to the given Locust CR name.
 func labelsForLocust(name string) map[string]string {
