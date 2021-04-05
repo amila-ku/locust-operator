@@ -5,7 +5,7 @@ metadata:
   name: locust-editor-role
 rules:
 - apiGroups:
-  - locustload.locustload.cndev.io
+  - locustload.cndev.io
   resources:
   - locusts
   verbs:
@@ -17,7 +17,7 @@ rules:
   - update
   - watch
 - apiGroups:
-  - locustload.locustload.cndev.io
+  - locustload.cndev.io
   resources:
   - locusts/status
   verbs:

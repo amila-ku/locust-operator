@@ -8,4 +8,4 @@ webhook:
   port: 9443
 leaderElection:
   leaderElect: true
-  resourceName: 093c4d07.locustload.cndev.io
+  resourceName: 093c4d07.cndev.io

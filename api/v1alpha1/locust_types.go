@@ -37,9 +37,9 @@ type LocustSpec struct {
 	//HatchRate is the maximum number of users to simulate
 	HatchRate int `json:"hatchrate,omitempty"`
 	//Slaves is the number of worker instances
-	Slaves int32 `json:"slaves,omitempty"` 
+	Slaves int32 `json:"slaves,omitempty"`
 	//MaxSlaves is the number of maximum worker instances
-	MaxSlaves int32 `json:"maxSlaves,omitempty"` 
+	MaxSlaves int32 `json:"maxSlaves,omitempty"`
 }
 
 // LocustStatus defines the observed state of Locust

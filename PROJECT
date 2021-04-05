@@ -1,4 +1,4 @@
-domain: locustload.cndev.io
+domain: cndev.io
 layout: go.kubebuilder.io/v3
 plugins:
   manifests.sdk.operatorframework.io/v2: {}
@@ -10,7 +10,7 @@ resources:
     crdVersion: v1
     namespaced: true
   controller: true
-  domain: locustload.cndev.io
+  domain: cndev.io
   group: locustload
   kind: Locust
   path: github.com/amila-ku/locust-operator.git/api/v1alpha1
