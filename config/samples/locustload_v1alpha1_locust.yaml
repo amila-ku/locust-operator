@@ -1,0 +1,7 @@
+apiVersion: locustload.locustload.cndev.io/v1alpha1
+kind: Locust
+metadata:
+  name: locust-sample
+spec:
+  # Add fields here
+  foo: bar

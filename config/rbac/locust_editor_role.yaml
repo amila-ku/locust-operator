@@ -1,0 +1,24 @@
+# permissions for end users to edit locusts.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: locust-editor-role
+rules:
+- apiGroups:
+  - locustload.locustload.cndev.io
+  resources:
+  - locusts
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - locustload.locustload.cndev.io
+  resources:
+  - locusts/status
+  verbs:
+  - get
