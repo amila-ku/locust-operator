@@ -4,7 +4,7 @@ plugins:
   manifests.sdk.operatorframework.io/v2: {}
   scorecard.sdk.operatorframework.io/v2: {}
 projectName: locust-operator
-repo: github.com/amila-ku/locust-operator.git
+repo: github.com/amila-ku/locust-operator
 resources:
 - api:
     crdVersion: v1
@@ -13,6 +13,6 @@ resources:
   domain: cndev.io
   group: locustload
   kind: Locust
-  path: github.com/amila-ku/locust-operator.git/api/v1alpha1
+  path: github.com/amila-ku/locust-operator/api/v1alpha1
   version: v1alpha1
 version: "3"

@@ -30,7 +30,8 @@ import (
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	locustloadv1alpha1 "github.com/amila-ku/locust-operator.git/api/v1alpha1"
+	locustloadv1alpha1 "github.com/amila-ku/locust-operator/api/v1alpha1"
+	"k8s.io/apimachinery/pkg/runtime"
 	//+kubebuilder:scaffold:imports
 )
 
@@ -40,6 +41,7 @@ import (
 var cfg *rest.Config
 var k8sClient client.Client
 var testEnv *envtest.Environment
+var testScheme *runtime.Scheme = scheme.Scheme
 
 func TestAPIs(t *testing.T) {
 	RegisterFailHandler(Fail)

@@ -25,12 +25,12 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/types"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	locustloadv1alpha1 "github.com/amila-ku/locust-operator.git/api/v1alpha1"
+	locustloadv1alpha1 "github.com/amila-ku/locust-operator/api/v1alpha1"
 )
 
 // LocustReconciler reconciles a Locust object
@@ -170,7 +170,7 @@ func (r *LocustReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		For(&locustloadv1alpha1.Locust{}).
 		Owns(&appsv1.Deployment{}).
 		Owns(&corev1.Service{}).
-		Owns(&ascalingv1.HorizontalPodAutoscaler {}).
+		Owns(&ascalingv1.HorizontalPodAutoscaler{}).
 		Complete(r)
 }
 

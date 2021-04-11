@@ -31,8 +31,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	locustloadv1alpha1 "github.com/amila-ku/locust-operator.git/api/v1alpha1"
-	"github.com/amila-ku/locust-operator.git/controllers"
+	locustloadv1alpha1 "github.com/amila-ku/locust-operator/api/v1alpha1"
+	"github.com/amila-ku/locust-operator/controllers"
 	//+kubebuilder:scaffold:imports
 )
 

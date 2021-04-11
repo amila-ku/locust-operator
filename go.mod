@@ -1,4 +1,4 @@
-module github.com/amila-ku/locust-operator.git
+module github.com/amila-ku/locust-operator
 
 go 1.15
 
