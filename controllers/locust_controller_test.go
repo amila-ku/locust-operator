@@ -22,17 +22,16 @@ import (
 	"testing"
 
 	"github.com/amila-ku/locust-operator/api/v1alpha1"
-	"github.com/amila-ku/locust-operator/controllers"
-	//"github.com/amila-ku/locust-operator/internal/config"
 	"github.com/go-logr/logr"
 	//appsv1 "k8s.io/api/apps/v1"
 	//corev1 "k8s.io/api/core/v1"
-	"github.com/stretchr/testify/require"
+	//"github.com/stretchr/testify/assert"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/client/fake"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	k8sreconcile "sigs.k8s.io/controller-runtime/pkg/reconcile"
 )
@@ -52,9 +51,16 @@ func TestLocustReconciler_Reconcile(t *testing.T) {
 			Users:   2,
 		},
 	}
-	err := k8sClient.Create(context.Background(), created)
-	// verify
-	require.NoError(t, err)
+	testScheme.AddKnownTypes(v1alpha1.SchemeBuilder.GroupVersion, created)
+
+	// Objects to track in the fake client.
+	objs := []runtime.Object{created}
+
+	// Create a fake client to mock API calls.
+	cl := fake.NewFakeClient(objs...)
+
+	//err := k8sClient.Create(context.Background(), created)
+
 	req := k8sreconcile.Request{
 		NamespacedName: nsn,
 	}
@@ -78,7 +84,7 @@ func TestLocustReconciler_Reconcile(t *testing.T) {
 	}{
 		{
 			name:    "TestNewObjects",
-			fields:  fields{k8sClient, logger, testScheme},
+			fields:  fields{cl, logger, testScheme},
 			args:    args{context.Background(), req},
 			want:    ctrl.Result{},
 			wantErr: false,
