@@ -10,10 +10,10 @@ LABEL "com.github.actions.color"="red"
 
 # add operator-sdk release binary
 ARG operator_sdk_version=v1.5.0
-ARG operator_sdk_base=https://github.com/operator-framework/operator-sdk/releases/download/
+ARG operator_sdk_base=https://github.com/operator-framework/operator-sdk/releases/
 ARG sdk_cli=/usr/bin/operator-sdk
 
-ADD ${operator_sdk_base}${operator_sdk_version}/operator-sdk-${operator_sdk_version}-x86_64-linux-gnu ${sdk_cli}
+ADD ${operator_sdk_base}${operator_sdk_version}/operator-sdk_linux_amd64 ${sdk_cli}
 RUN chmod +x ${sdk_cli}
 
 # could also add "alpine-sdk" to apk add to enable the go tools from this image
