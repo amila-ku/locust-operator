@@ -23,8 +23,6 @@ import (
 
 	"github.com/amila-ku/locust-operator/api/v1alpha1"
 	"github.com/go-logr/logr"
-	//appsv1 "k8s.io/api/apps/v1"
-	//corev1 "k8s.io/api/core/v1"
 	//"github.com/stretchr/testify/assert"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -51,6 +49,8 @@ func TestLocustReconciler_Reconcile(t *testing.T) {
 			Users:   2,
 		},
 	}
+
+	// Add the Locust as a resource type
 	testScheme.AddKnownTypes(v1alpha1.SchemeBuilder.GroupVersion, created)
 
 	// Objects to track in the fake client.
