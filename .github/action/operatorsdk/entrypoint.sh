@@ -8,4 +8,4 @@ ln -s "$GITHUB_WORKSPACE" "$PROJECT_ROOT"
 cd "$PROJECT_ROOT" || exit 1
 
 # Execute
-operator-sdk build "$@":"$VERSION"
+make build "$@":"$VERSION"
