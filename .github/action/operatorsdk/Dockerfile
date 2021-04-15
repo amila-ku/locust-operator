@@ -10,7 +10,7 @@ LABEL "com.github.actions.color"="red"
 
 # add operator-sdk release binary
 ARG operator_sdk_version=v1.5.0
-ARG operator_sdk_base=https://github.com/operator-framework/operator-sdk/releases/
+ARG operator_sdk_base=https://github.com/operator-framework/operator-sdk/releases/download/
 ARG sdk_cli=/usr/bin/operator-sdk
 
 ADD ${operator_sdk_base}${operator_sdk_version}/operator-sdk_linux_amd64 ${sdk_cli}
