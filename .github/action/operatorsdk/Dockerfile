@@ -18,6 +18,7 @@ RUN chmod +x ${sdk_cli}
 
 # could also add "alpine-sdk" to apk add to enable the go tools from this image
 RUN apk add --update docker
+RUN apk add --update make
 
 # usage: in GitHub Actions, execute "operator-sdk build image:version"
 COPY entrypoint.sh /entrypoint.sh
