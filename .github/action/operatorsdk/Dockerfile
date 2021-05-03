@@ -19,6 +19,7 @@ RUN chmod +x ${sdk_cli}
 # could also add "alpine-sdk" to apk add to enable the go tools from this image
 RUN apk add --update docker
 RUN apk add --update make
+RUN go get sigs.k8s.io/controller-tools/cmd/controller-gen@v0.4.1
 
 # usage: in GitHub Actions, execute "operator-sdk build image:version"
 COPY entrypoint.sh /entrypoint.sh
