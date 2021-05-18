@@ -6,7 +6,6 @@ mkdir -p "$PROJECT_ROOT"
 rmdir "$PROJECT_ROOT"
 ln -s "$GITHUB_WORKSPACE" "$PROJECT_ROOT"
 cd "$PROJECT_ROOT" || exit 1
-ln -s /go/bin/controller-gen /github/workspace/bin/controller-gen
 
 # Execute
 
