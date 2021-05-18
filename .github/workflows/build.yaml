@@ -1,14 +1,57 @@
-name: build
-on: [push]
+name: "Continuous Integration"
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
 jobs:
-  operator-sdk:
-    runs-on: ubuntu-latest
+  unit-tests:
+    name: Unit tests
+    runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@master
-    - name: operator-sdk
-      env:
-        GO111MODULE: "on"
-        VERSION: v0.0.4
-      uses: ./.github/action/operatorsdk
+    - name: Set up Go
+      uses: actions/setup-go@v2
       with:
-        args: amilaku/locust-operator
+        go-version: 1.16
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v2.3.4
+
+    - name: "install kubebuilder"
+      run: ./hack/install-kubebuilder.sh
+
+    - name: "basic checks"
+      run: make ci
+
+  lint:
+    name: Code standards (linting)
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v2.3.4
+
+    - name: Lint
+      uses: golangci/golangci-lint-action@v2.5.2
+      with:
+        args: -v
+        version: v1.29
+
+  security:
+    name: Security
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v2.3.4
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v1
+      with:
+        languages: go
+
+    - name: Autobuild
+      uses: github/codeql-action/autobuild@v1
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v1
