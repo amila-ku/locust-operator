@@ -23,7 +23,7 @@ jobs:
       run: ./hack/install-kubebuilder.sh
 
     - name: "basic checks"
-      run: make ci
+      run: make test
 
   lint:
     name: Code standards (linting)

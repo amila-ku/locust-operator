@@ -85,12 +85,12 @@ spec:
 commands
 
 ```
-make build-img
+make build
 
 ```
 
-### push docker image to repo
+### build docker image
 
 ```
-make push-img
+make docker-build
 ```
